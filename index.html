@@ -9,6 +9,7 @@
             --pink: #ffafbd;
             --dark-pink: #ff4b2b;
             --white: #ffffff;
+            --spotify-green: #1DB954;
         }
 
         body {
@@ -32,11 +33,11 @@
             text-align: center;
             max-width: 600px;
             width: 100%;
+            position: relative;
         }
 
-        h1 { color: var(--dark-pink); font-size: 2.5rem; margin-bottom: 10px; transition: all 0.5s ease; }
+        h1 { color: var(--dark-pink); font-size: 2.5rem; margin-bottom: 10px; }
 
-        /* Gallery Styles */
         .gallery {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -49,7 +50,6 @@
             padding: 10px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             transform: rotate(-2deg);
-            transition: transform 0.3s;
         }
 
         .photo-frame:nth-child(even) { transform: rotate(2deg); }
@@ -61,20 +61,32 @@
             border-radius: 5px;
         }
 
-        .photo-frame p { font-size: 0.9rem; margin: 5px 0 0; font-style: italic; }
+        /* Music Button Styling */
+        .music-player-btn {
+            background-color: var(--spotify-green);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            margin: 20px 0;
+            transition: transform 0.2s;
+        }
 
-        /* Music Player Container */
-        .music-container { margin: 25px 0; border-radius: 12px; overflow: hidden; min-height: 152px; }
+        .music-player-btn:hover { transform: scale(1.05); }
 
-        /* Buttons */
+        /* Fixed Button Group */
         .btn-group {
-            margin-top: 30px;
-            height: 100px; 
-            position: relative;
+            margin-top: 40px;
+            min-height: 80px;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 20px;
+            gap: 30px;
+            position: relative;
         }
 
         button {
@@ -84,22 +96,19 @@
             border-radius: 50px;
             cursor: pointer;
             font-weight: bold;
-            transition: transform 0.2s, top 0.2s, left 0.2s;
         }
 
         #yesBtn {
             background-color: #ff4b2b;
             color: white;
             box-shadow: 0 4px 15px rgba(255, 75, 43, 0.4);
-            z-index: 10;
         }
 
         #noBtn {
             background-color: #eee;
             color: #888;
-            position: absolute;
-            white-space: nowrap;
             transition: all 0.2s ease;
+            z-index: 100;
         }
     </style>
 </head>
@@ -110,29 +119,18 @@
         <p>cant really quantify how important you are in my life</p>
 
         <div class="gallery">
-            <div class="photo-frame">
-                <img src="https://i.imgur.com/j2F1V7t.jpeg" alt="First Date">
-                <p>Our first date </p>
-            </div>
-            <div class="photo-frame">
-                <img src="https://i.imgur.com/WdfNBoC.jpeg" alt="MIlanOOOO">
-                <p>MILANOOOO </p>
-            </div>
-            <div class="photo-frame">
-                <img src="https://i.imgur.com/TTvzwq3.jpeg" alt="Karaoke">
-                <p>random ahh day </p>
-            </div>
-            <div class="photo-frame">
-                <img src="https://i.imgur.com/UPYLgTj.jpeg" alt="Literally USS">
-                <p>I literally love you 💖</p>
-            </div>
+            <div class="photo-frame"><img src="https://i.imgur.com/j2F1V7t.jpeg"><p>Our first date </p></div>
+            <div class="photo-frame"><img src="https://i.imgur.com/WdfNBoC.jpeg"><p>MILANOOOO </p></div>
+            <div class="photo-frame"><img src="https://i.imgur.com/TTvzwq3.jpeg"><p>random ahh day </p></div>
+            <div class="photo-frame"><img src="https://i.imgur.com/UPYLgTj.jpeg"><p>I literally love you 💖</p></div>
         </div>
 
-        <div class="music-container">
-             <iframe style="border-radius:12px" src="https://developer.spotify.com/documentation/embeds0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-        </div>
+        <a href="https://open.spotify.com/track/30" target="_blank" class="music-player-btn">
+            <svg width="20" height="20" fill="white" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+            Play Our Song 🎵
+        </a>
 
-        <div class="btn-group">
+        <div class="btn-group" id="group">
             <button id="yesBtn" onclick="celebrate()">YES!</button>
             <button id="noBtn" onmouseover="moveButton()" onclick="moveButton()">No</button>
         </div>
@@ -142,26 +140,20 @@
     <script>
         function moveButton() {
             const btn = document.getElementById('noBtn');
-            // Keeps the button within the visible viewport so it doesn't cause scrolling
-            const x = Math.random() * (window.innerWidth - btn.offsetWidth - 20);
-            const y = Math.random() * (window.innerHeight - btn.offsetHeight - 20);
+            // This math keeps the button within the browser window
+            const x = Math.random() * (window.innerWidth - btn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - btn.offsetHeight);
             
-            btn.style.position = 'fixed'; // Makes it float over everything
+            btn.style.position = 'fixed'; 
             btn.style.left = x + 'px';
             btn.style.top = y + 'px';
         }
 
         function celebrate() {
-            confetti({
-                particleCount: 150,
-                spread: 70,
-                origin: { y: 0.6 }
-            });
-
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
             document.querySelector('h1').innerHTML = "YAY! I LOVE YOU! ❤️";
-            // Hide the No button and show the success message
             document.getElementById('noBtn').style.display = 'none';
-            document.querySelector('.btn-group').innerHTML = "<h3>Can't wait to see you again</h3>";
+            document.getElementById('group').innerHTML = "<h3>Can't wait to see you again</h3>";
         }
     </script>
 </body>
